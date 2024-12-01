@@ -5,16 +5,9 @@
 #include <sstream>
 
 #include "memory.hpp"
-#include "regfile.hpp"
+#include "common.hpp"
 
 namespace sim {
-
-using addr_t = uint64_t;
-
-using reg_t = addr_t;
-using signed_reg_t = int64_t;
-
-using reg_id_t = uint32_t;  // TODO: add GPRegId enum class with regs names
 
 class Hart final {
    private:

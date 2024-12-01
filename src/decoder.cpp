@@ -1,4 +1,5 @@
 #include "decoder.hpp"
+#include "common.hpp"
 
 #include <fmt/format.h>
 
