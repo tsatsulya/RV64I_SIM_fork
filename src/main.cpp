@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
     myLogger.init(log_level);
     myLogger.message(Logger::standard, "main", "RISV RV64_I simulator");
 
-    hart::Hart hart{elf_file};
+    sim::Hart hart{elf_file};
 
-    executor::Executor::run(hart);
+    sim::Executor::run(hart);
 }

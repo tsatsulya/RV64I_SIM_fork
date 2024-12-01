@@ -6,16 +6,16 @@
 
 #include <cerrno>
 #include <cstddef>
+#include <cstdint>
+#include <cstring>
 #include <iostream>
 #include <stdexcept>
 #include <string>
-#include <cstdint>
-#include <cstring>
 
 #include "fmt/format.h"
 #include "logger.hpp"
 
-namespace memory {
+namespace sim {
 
 class Memory {
    private:
@@ -58,4 +58,4 @@ class Memory {
     }
 };
 
-}  // namespace memory
+}  // namespace sim

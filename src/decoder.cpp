@@ -10,9 +10,9 @@
 #include "instruction.hpp"
 #include "logger.hpp"
 
-namespace decoder {
+namespace sim {
 
-const std::array<instruction::instr_t, kOpcodeNum> Decoder::m_mask{{
+const std::array<instr_t, kOpcodeNum> Decoder::m_mask{{
     [0b0000011] = 0x707f,  // LOAD
     // [0b0001111] = 0x707f,      // MISC-MEM
     [0b0010011] = 0x707f,      // OP-IMM
@@ -28,7 +28,7 @@ const std::array<instruction::instr_t, kOpcodeNum> Decoder::m_mask{{
     // [0b1110011] = 0x707f,      // SYSTEM
 }};
 
-enum class Decoder::Match : instruction::instr_t {  // MATCH
+enum class Decoder::Match : instr_t {  // MATCH
     // LUI
     LUI = 0x37,
 
@@ -109,301 +109,300 @@ enum class Decoder::Match : instruction::instr_t {  // MATCH
     SRAW = 0x4000503b,
 };
 
-void Decoder::decode_r_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr) {
+void Decoder::decode_r_type(instr_t raw_instr, EncInstr &enc_instr) {
     enc_instr.rs2 = bits<24, 20>(raw_instr);
     enc_instr.rs1 = bits<19, 15>(raw_instr);
     enc_instr.rd = bits<11, 7>(raw_instr);
 }
 
-void Decoder::decode_i_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr) {
+void Decoder::decode_i_type(instr_t raw_instr, EncInstr &enc_instr) {
     enc_instr.imm = sbits<31, 20>(raw_instr);
     enc_instr.rs1 = bits<19, 15>(raw_instr);
     enc_instr.rd = bits<11, 7>(raw_instr);
 }
 
-void Decoder::decode_s_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr) {
+void Decoder::decode_s_type(instr_t raw_instr, EncInstr &enc_instr) {
     enc_instr.imm = (sbits<31, 25>(raw_instr) << 5) | (bits<11, 7>(raw_instr));
     enc_instr.rs2 = bits<24, 20>(raw_instr);
     enc_instr.rs1 = bits<19, 15>(raw_instr);
 }
 
-void Decoder::decode_b_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr) {
+void Decoder::decode_b_type(instr_t raw_instr, EncInstr &enc_instr) {
     enc_instr.imm = sbits<12, 0>((bit<31>(raw_instr) << 12) | (bits<30, 25>(raw_instr) << 5) |
                                  (bits<11, 8>(raw_instr) << 1) | (bit<7>(raw_instr) << 11));
     enc_instr.rs2 = bits<24, 20>(raw_instr);
     enc_instr.rs1 = bits<19, 15>(raw_instr);
 }
 
-void Decoder::decode_u_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr) {
+void Decoder::decode_u_type(instr_t raw_instr, EncInstr &enc_instr) {
     enc_instr.imm = sbits<31, 12>(raw_instr) << 12;
     enc_instr.rd = bits<11, 7>(raw_instr);
 }
 
-void Decoder::decode_j_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr) {
+void Decoder::decode_j_type(instr_t raw_instr, EncInstr &enc_instr) {
     enc_instr.imm = sbits<20, 0>((bit<31>(raw_instr) << 20) | (bits<30, 21>(raw_instr) << 1) |
                                  (bit<20>(raw_instr) << 11) | (bits<19, 12>(raw_instr) << 12));
     enc_instr.rd = bits<11, 7>(raw_instr);
 }
 
-void Decoder::decode_instruction(instruction::instr_t raw_instr,
-                                 instruction::EncInstr &enc_instr) try {
+void Decoder::decode_instruction(instr_t raw_instr, EncInstr &enc_instr) try {
     auto opcode = bits<6, 0>(raw_instr);
 
-    instruction::instr_t match = raw_instr & m_mask[opcode];
+    instr_t match = raw_instr & m_mask[opcode];
     auto match_id = static_cast<Match>(match);
 
     switch (match_id) {
         // R - type
         case Match::ADD: {
-            enc_instr.id = instruction::InstrId::ADD;
+            enc_instr.id = InstrId::ADD;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SUB: {
-            enc_instr.id = instruction::InstrId::SUB;
+            enc_instr.id = InstrId::SUB;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLL: {
-            enc_instr.id = instruction::InstrId::SLL;
+            enc_instr.id = InstrId::SLL;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLT: {
-            enc_instr.id = instruction::InstrId::SLT;
+            enc_instr.id = InstrId::SLT;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLTU: {
-            enc_instr.id = instruction::InstrId::SLTU;
+            enc_instr.id = InstrId::SLTU;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::XOR: {
-            enc_instr.id = instruction::InstrId::XOR;
+            enc_instr.id = InstrId::XOR;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SRL: {
-            enc_instr.id = instruction::InstrId::SRL;
+            enc_instr.id = InstrId::SRL;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SRA: {
-            enc_instr.id = instruction::InstrId::SRA;
+            enc_instr.id = InstrId::SRA;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::OR: {
-            enc_instr.id = instruction::InstrId::OR;
+            enc_instr.id = InstrId::OR;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::AND: {
-            enc_instr.id = instruction::InstrId::AND;
+            enc_instr.id = InstrId::AND;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::ADDW: {
-            enc_instr.id = instruction::InstrId::ADDW;
+            enc_instr.id = InstrId::ADDW;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLLW: {
-            enc_instr.id = instruction::InstrId::SLLW;
+            enc_instr.id = InstrId::SLLW;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SRLW: {
-            enc_instr.id = instruction::InstrId::SRLW;
+            enc_instr.id = InstrId::SRLW;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SUBW: {
-            enc_instr.id = instruction::InstrId::SUBW;
+            enc_instr.id = InstrId::SUBW;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SRAW: {
-            enc_instr.id = instruction::InstrId::SRAW;
+            enc_instr.id = InstrId::SRAW;
             decode_r_type(raw_instr, enc_instr);
             break;
         }
 
         // I - type
         case Match::JALR: {
-            enc_instr.id = instruction::InstrId::JALR;
+            enc_instr.id = InstrId::JALR;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LB: {
-            enc_instr.id = instruction::InstrId::LB;
+            enc_instr.id = InstrId::LB;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LH: {
-            enc_instr.id = instruction::InstrId::LH;
+            enc_instr.id = InstrId::LH;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LW: {
-            enc_instr.id = instruction::InstrId::LW;
+            enc_instr.id = InstrId::LW;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LBU: {
-            enc_instr.id = instruction::InstrId::LBU;
+            enc_instr.id = InstrId::LBU;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LHU: {
-            enc_instr.id = instruction::InstrId::LHU;
+            enc_instr.id = InstrId::LHU;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::ADDI: {
-            enc_instr.id = instruction::InstrId::ADDI;
+            enc_instr.id = InstrId::ADDI;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLTI: {
-            enc_instr.id = instruction::InstrId::SLTI;
+            enc_instr.id = InstrId::SLTI;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLTIU: {
-            enc_instr.id = instruction::InstrId::SLTIU;
+            enc_instr.id = InstrId::SLTIU;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::XORI: {
-            enc_instr.id = instruction::InstrId::XORI;
+            enc_instr.id = InstrId::XORI;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::ORI: {
-            enc_instr.id = instruction::InstrId::ORI;
+            enc_instr.id = InstrId::ORI;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::ANDI: {
-            enc_instr.id = instruction::InstrId::ANDI;
+            enc_instr.id = InstrId::ANDI;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LWU: {
-            enc_instr.id = instruction::InstrId::LWU;
+            enc_instr.id = InstrId::LWU;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LD: {
-            enc_instr.id = instruction::InstrId::LD;
+            enc_instr.id = InstrId::LD;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLLI: {
-            enc_instr.id = instruction::InstrId::SLLI;
+            enc_instr.id = InstrId::SLLI;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::SRI: {
             decode_i_type(raw_instr, enc_instr);
             if (bit<10>(enc_instr.imm)) {
-                enc_instr.id = instruction::InstrId::SRAI;
+                enc_instr.id = InstrId::SRAI;
             } else {
-                enc_instr.id = instruction::InstrId::SRLI;
+                enc_instr.id = InstrId::SRLI;
             }
             break;
         }
         case Match::ADDIW: {
-            enc_instr.id = instruction::InstrId::ADDIW;
+            enc_instr.id = InstrId::ADDIW;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLLIW: {
-            enc_instr.id = instruction::InstrId::SLLIW;
+            enc_instr.id = InstrId::SLLIW;
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::SRIW: {
             decode_i_type(raw_instr, enc_instr);
             if (bit<10>(enc_instr.imm)) {
-                enc_instr.id = instruction::InstrId::SRAIW;
+                enc_instr.id = InstrId::SRAIW;
             } else {
-                enc_instr.id = instruction::InstrId::SRLIW;
+                enc_instr.id = InstrId::SRLIW;
             }
             break;
         }
 
         // S - type
         case Match::SB: {
-            enc_instr.id = instruction::InstrId::SB;
+            enc_instr.id = InstrId::SB;
             decode_s_type(raw_instr, enc_instr);
             break;
         }
         case Match::SH: {
-            enc_instr.id = instruction::InstrId::SH;
+            enc_instr.id = InstrId::SH;
             decode_s_type(raw_instr, enc_instr);
             break;
         }
         case Match::SW: {
-            enc_instr.id = instruction::InstrId::SW;
+            enc_instr.id = InstrId::SW;
             decode_s_type(raw_instr, enc_instr);
             break;
         }
         case Match::SD: {
-            enc_instr.id = instruction::InstrId::SD;
+            enc_instr.id = InstrId::SD;
             decode_s_type(raw_instr, enc_instr);
             break;
         }
 
         // B - type
         case Match::BEQ: {
-            enc_instr.id = instruction::InstrId::BEQ;
+            enc_instr.id = InstrId::BEQ;
             decode_b_type(raw_instr, enc_instr);
             break;
         }
         case Match::BNE: {
-            enc_instr.id = instruction::InstrId::BNE;
+            enc_instr.id = InstrId::BNE;
             decode_b_type(raw_instr, enc_instr);
             break;
         }
         case Match::BLT: {
-            enc_instr.id = instruction::InstrId::BLT;
+            enc_instr.id = InstrId::BLT;
             decode_b_type(raw_instr, enc_instr);
             break;
         }
         case Match::BGE: {
-            enc_instr.id = instruction::InstrId::BGE;
+            enc_instr.id = InstrId::BGE;
             decode_b_type(raw_instr, enc_instr);
             break;
         }
         case Match::BLTU: {
-            enc_instr.id = instruction::InstrId::BLTU;
+            enc_instr.id = InstrId::BLTU;
             decode_b_type(raw_instr, enc_instr);
             break;
         }
         case Match::BGEU: {
-            enc_instr.id = instruction::InstrId::BGEU;
+            enc_instr.id = InstrId::BGEU;
             decode_b_type(raw_instr, enc_instr);
             break;
         }
 
         // U - type
         case Match::LUI: {
-            enc_instr.id = instruction::InstrId::LUI;
+            enc_instr.id = InstrId::LUI;
             decode_u_type(raw_instr, enc_instr);
             break;
         }
         case Match::AUIPC: {
-            enc_instr.id = instruction::InstrId::AUIPC;
+            enc_instr.id = InstrId::AUIPC;
             decode_u_type(raw_instr, enc_instr);
             break;
         }
 
         // J - type
         case Match::JAL: {
-            enc_instr.id = instruction::InstrId::JAL;
+            enc_instr.id = InstrId::JAL;
             decode_j_type(raw_instr, enc_instr);
             break;
         }
@@ -419,12 +418,11 @@ void Decoder::decode_instruction(instruction::instr_t raw_instr,
     }
 
     Logger &myLogger = Logger::getInstance();
-    myLogger.message(
-        Logger::severity_level::standard, "Decoder",
-        fmt::format("Match {} {:#08x}\n", instruction::InstrName[enc_instr.id], raw_instr));
+    myLogger.message(Logger::severity_level::standard, "Decoder",
+                     fmt::format("Match {} {:#08x}\n", InstrName[enc_instr.id], raw_instr));
 
 } catch (const std::invalid_argument &e) {
     std::cerr << e.what() << std::endl;
 }
 
-}  // namespace decoder
+}  // namespace sim

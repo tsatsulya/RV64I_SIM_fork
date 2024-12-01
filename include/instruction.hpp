@@ -6,7 +6,7 @@
 #include <string>
 #include <string_view>
 
-namespace instruction {
+namespace sim {
 
 using instr_t = uint32_t;
 
@@ -155,4 +155,4 @@ struct EncInstr {
     }
 };
 
-}  // namespace instruction
+}  // namespace sim

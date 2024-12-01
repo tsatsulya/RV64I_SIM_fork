@@ -1,16 +1,13 @@
 #pragma once
 
 #include <array>
+#include <cstdint>
 #include <sstream>
 
 #include "memory.hpp"
 #include "regfile.hpp"
-#include <cstdint>
 
-
-namespace hart {
-
-constexpr size_t g_regfile_size = 32;
+namespace sim {
 
 using addr_t = uint64_t;
 
@@ -21,7 +18,7 @@ using reg_id_t = uint32_t;  // TODO: add GPRegId enum class with regs names
 
 class Hart final {
    private:
-    memory::Memory m_mem{};
+    Memory m_mem{};
 
     addr_t m_pc, m_pc_next;
     std::array<reg_t, g_regfile_size> m_regfile{};
@@ -52,4 +49,4 @@ class Hart final {
         m_mem.store<ValType>(addr, value);
     }
 };
-}  // namespace hart
+}  // namespace sim

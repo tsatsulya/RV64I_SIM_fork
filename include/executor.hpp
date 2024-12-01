@@ -1,82 +1,82 @@
 #include "hart.hpp"
 #include "instruction.hpp"
 
-namespace executor {
+namespace sim {
 
 class Executor {
    private:
     // R - type
-    static void execute_add(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_sub(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_sll(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_slt(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_sltu(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_xor(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_srl(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_sra(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_or(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_and(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_addw(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_sllw(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_srlw(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_subw(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_sraw(hart::Hart &hart, const instruction::EncInstr &instr);
+    static void execute_add(Hart &hart, const EncInstr &instr);
+    static void execute_sub(Hart &hart, const EncInstr &instr);
+    static void execute_sll(Hart &hart, const EncInstr &instr);
+    static void execute_slt(Hart &hart, const EncInstr &instr);
+    static void execute_sltu(Hart &hart, const EncInstr &instr);
+    static void execute_xor(Hart &hart, const EncInstr &instr);
+    static void execute_srl(Hart &hart, const EncInstr &instr);
+    static void execute_sra(Hart &hart, const EncInstr &instr);
+    static void execute_or(Hart &hart, const EncInstr &instr);
+    static void execute_and(Hart &hart, const EncInstr &instr);
+    static void execute_addw(Hart &hart, const EncInstr &instr);
+    static void execute_sllw(Hart &hart, const EncInstr &instr);
+    static void execute_srlw(Hart &hart, const EncInstr &instr);
+    static void execute_subw(Hart &hart, const EncInstr &instr);
+    static void execute_sraw(Hart &hart, const EncInstr &instr);
 
     // I - type
-    static void execute_jalr(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_lb(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_lh(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_lw(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_lbu(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_lhu(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_addi(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_slti(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_sltiu(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_xori(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_ori(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_andi(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_lwu(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_ld(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_slli(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_srli(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_srai(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_addiw(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_slliw(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_srliw(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_sraiw(hart::Hart &hart, const instruction::EncInstr &instr);
-    // static void execute_ecall(hart::Hart &hart, const instruction::EncInstr &instr);
-    // static void execute_ebreak(hart::Hart &hart, const instruction::EncInstr &instr);
-    // static void execute_fence(hart::Hart &hart, const instruction::EncInstr &instr);
-    // static void execute_fence_i(hart::Hart &hart, const instruction::EncInstr &instr);
+    static void execute_jalr(Hart &hart, const EncInstr &instr);
+    static void execute_lb(Hart &hart, const EncInstr &instr);
+    static void execute_lh(Hart &hart, const EncInstr &instr);
+    static void execute_lw(Hart &hart, const EncInstr &instr);
+    static void execute_lbu(Hart &hart, const EncInstr &instr);
+    static void execute_lhu(Hart &hart, const EncInstr &instr);
+    static void execute_addi(Hart &hart, const EncInstr &instr);
+    static void execute_slti(Hart &hart, const EncInstr &instr);
+    static void execute_sltiu(Hart &hart, const EncInstr &instr);
+    static void execute_xori(Hart &hart, const EncInstr &instr);
+    static void execute_ori(Hart &hart, const EncInstr &instr);
+    static void execute_andi(Hart &hart, const EncInstr &instr);
+    static void execute_lwu(Hart &hart, const EncInstr &instr);
+    static void execute_ld(Hart &hart, const EncInstr &instr);
+    static void execute_slli(Hart &hart, const EncInstr &instr);
+    static void execute_srli(Hart &hart, const EncInstr &instr);
+    static void execute_srai(Hart &hart, const EncInstr &instr);
+    static void execute_addiw(Hart &hart, const EncInstr &instr);
+    static void execute_slliw(Hart &hart, const EncInstr &instr);
+    static void execute_srliw(Hart &hart, const EncInstr &instr);
+    static void execute_sraiw(Hart &hart, const EncInstr &instr);
+    // static void execute_ecall(Hart &hart, const EncInstr &instr);
+    // static void execute_ebreak(Hart &hart, const EncInstr &instr);
+    // static void execute_fence(Hart &hart, const EncInstr &instr);
+    // static void execute_fence_i(Hart &hart, const EncInstr &instr);
 
-    // static void execute_pause(hart::Hart &hart, const instruction::EncInstr &instr);
+    // static void execute_pause(Hart &hart, const EncInstr &instr);
 
     // S - type
-    static void execute_sb(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_sh(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_sw(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_sd(hart::Hart &hart, const instruction::EncInstr &instr);
+    static void execute_sb(Hart &hart, const EncInstr &instr);
+    static void execute_sh(Hart &hart, const EncInstr &instr);
+    static void execute_sw(Hart &hart, const EncInstr &instr);
+    static void execute_sd(Hart &hart, const EncInstr &instr);
 
     // B - type
-    static void execute_beq(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_bne(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_blt(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_bge(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_bltu(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_bgeu(hart::Hart &hart, const instruction::EncInstr &instr);
+    static void execute_beq(Hart &hart, const EncInstr &instr);
+    static void execute_bne(Hart &hart, const EncInstr &instr);
+    static void execute_blt(Hart &hart, const EncInstr &instr);
+    static void execute_bge(Hart &hart, const EncInstr &instr);
+    static void execute_bltu(Hart &hart, const EncInstr &instr);
+    static void execute_bgeu(Hart &hart, const EncInstr &instr);
 
     // U - type
-    static void execute_lui(hart::Hart &hart, const instruction::EncInstr &instr);
-    static void execute_auipc(hart::Hart &hart, const instruction::EncInstr &instr);
+    static void execute_lui(Hart &hart, const EncInstr &instr);
+    static void execute_auipc(Hart &hart, const EncInstr &instr);
 
     // J - type
-    static void execute_jal(hart::Hart &hart, const instruction::EncInstr &instr);
+    static void execute_jal(Hart &hart, const EncInstr &instr);
 
-    using executor_func_t = void (*)(hart::Hart &hart, const instruction::EncInstr &instr);
+    using executor_func_t = void (*)(Hart &hart, const EncInstr &instr);
     static const std::array<Executor::executor_func_t, 49> functions;
 
    public:
-    static bool run(hart::Hart &hart);
+    static bool run(Hart &hart);
 };
 
-}  // namespace executor
+}  // namespace sim

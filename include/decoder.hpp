@@ -6,7 +6,7 @@
 
 #include "instruction.hpp"
 
-namespace decoder {
+namespace sim {
 
 constexpr size_t kOpcodeNum = 1 << 7;
 
@@ -42,19 +42,18 @@ uint64_t sext(uint64_t value) {  // == sbits<high_bit , 0>
 
 class Decoder final {
    private:
-    static const std::array<instruction::instr_t, kOpcodeNum> m_mask;
-    enum class Match : instruction::instr_t;
+    static const std::array<instr_t, kOpcodeNum> m_mask;
+    enum class Match : instr_t;
 
-    static void decode_r_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr);
-    static void decode_i_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr);
-    static void decode_s_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr);
-    static void decode_b_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr);
-    static void decode_u_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr);
-    static void decode_j_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr);
+    static void decode_r_type(instr_t raw_instr, EncInstr &enc_instr);
+    static void decode_i_type(instr_t raw_instr, EncInstr &enc_instr);
+    static void decode_s_type(instr_t raw_instr, EncInstr &enc_instr);
+    static void decode_b_type(instr_t raw_instr, EncInstr &enc_instr);
+    static void decode_u_type(instr_t raw_instr, EncInstr &enc_instr);
+    static void decode_j_type(instr_t raw_instr, EncInstr &enc_instr);
 
    public:
-    static void decode_instruction(instruction::instr_t raw_instr,
-                                   instruction::EncInstr &enc_instr);
+    static void decode_instruction(instr_t raw_instr, EncInstr &enc_instr);
 };
 
-}  // namespace decoder
+}  // namespace sim

@@ -6,7 +6,7 @@
 
 #include "elfio/elfio.hpp"
 
-namespace hart {
+namespace sim {
 
 std::string Hart::format_registers() {
     std::ostringstream oss{};
@@ -55,4 +55,4 @@ void Hart::set_reg(reg_id_t reg_id, reg_t value) {
     m_regfile[0] = 0;
 };
 
-}  // namespace hart
+}  // namespace sim

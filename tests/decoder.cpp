@@ -8,7 +8,7 @@
 #include "instruction.hpp"
 #include "logger.hpp"
 
-namespace instruction {
+namespace sim {
 
 struct ExpectedEncInstr : EncInstr {
     ExpectedEncInstr(InstrId id, uint8_t rd, uint8_t rs1, uint8_t rs2, uint64_t imm)
@@ -29,12 +29,12 @@ struct DecoderTest : public testing::Test {
     EncInstr enc_insn{};
     ExpectedEncInstr expected_insn{};
     bool check_inst_decode(int32_t opcode, InstrId expected_opcode) {
-        decoder::Decoder::decode_instruction(opcode, enc_insn);
+        Decoder::decode_instruction(opcode, enc_insn);
         return (enc_insn.id == expected_opcode);
     }
 
     bool check_inst_decode(int32_t opcode, ExpectedEncInstr expected_inst) {
-        decoder::Decoder::decode_instruction(opcode, enc_insn);
+        Decoder::decode_instruction(opcode, enc_insn);
         return (enc_insn == expected_inst);
     }
 };
@@ -231,4 +231,4 @@ int main(int argc, char** argv) {
     return RUN_ALL_TESTS();
 }
 
-}  // namespace instruction
+}  // namespace sim
