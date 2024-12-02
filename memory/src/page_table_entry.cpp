@@ -15,7 +15,7 @@ namespace sim {
         kPPNSizeBit = 26;
     }
     size_t high_bit = low_bit + kPPNSizeBit;
-    return bits<high_bit, low_bit>(m_pte);
+    // return bits<high_bit, low_bit>(m_pte);
 }
 
 }  // namespace sim

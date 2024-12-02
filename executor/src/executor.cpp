@@ -4,7 +4,6 @@
 #include <iostream>
 
 #include "decoder.hpp"
-// #include "fmt/format.h"
 #include <format>
 
 #include "hart.hpp"

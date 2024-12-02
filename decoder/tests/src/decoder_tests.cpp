@@ -6,7 +6,6 @@
 #include <cstdint>
 
 #include "instruction.hpp"
-#include "logger.hpp"
 
 namespace sim {
 
