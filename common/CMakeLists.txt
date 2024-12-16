@@ -1,1 +1,3 @@
-add_header_only_module(common)
+add_module(common)
+
+target_sources(common PRIVATE src/common_mem.cpp)

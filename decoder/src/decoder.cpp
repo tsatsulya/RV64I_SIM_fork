@@ -1,5 +1,4 @@
 #include "decoder.hpp"
-#include "common.hpp"
 
 #include <fmt/format.h>
 
@@ -8,6 +7,7 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "common.hpp"
 #include "instruction.hpp"
 #include "logger.hpp"
 
@@ -26,7 +26,7 @@ const std::array<instr_t, kOpcodeNum> Decoder::m_mask{{
     [0b1100011] = 0x707f,      // BRANCH
     [0b1100111] = 0x707f,      // JALR
     [0b1101111] = 0x7f,        // JAL
-    // [0b1110011] = 0x707f,      // SYSTEM
+    [0b1110011] = 0x707f,      // SYSTEM
 }};
 
 enum class Decoder::Match : instr_t {  // MATCH
@@ -99,7 +99,7 @@ enum class Decoder::Match : instr_t {  // MATCH
     // FENCE_I = 0x100f,
 
     // SYSTEM
-    // ECALL = 0x73,
+    ECALL = 0x73,
     // EBREAK = 0x100073,
 
     // OP-32
@@ -407,7 +407,10 @@ void Decoder::decode_instruction(instr_t raw_instr, EncInstr &enc_instr) try {
             decode_j_type(raw_instr, enc_instr);
             break;
         }
-            // case Match::ECALL:
+        case Match::ECALL: {
+            enc_instr.id = InstrId::ECALL;
+            break;
+        }
             // case Match::EBREAK:
             // case Match::FENCE:
             // case Match::FENCE_I:

@@ -2,6 +2,7 @@
 
 #include "hart.hpp"
 #include "instruction.hpp"
+#include "basic_block.hpp"
 
 namespace sim {
 
@@ -74,11 +75,15 @@ class Executor {
     // J - type
     static void execute_jal(Hart &hart, const EncInstr &instr);
 
+    static void execute_ecall(Hart &hart, const EncInstr &instr);
+
+    static bool execute_BB(Hart &hart, BasicBlock &bb, size_t &instr_counter);
+
     using executor_func_t = void (*)(Hart &hart, const EncInstr &instr);
-    static const std::array<Executor::executor_func_t, 49> functions;
+    static const std::array<Executor::executor_func_t, 50> functions;
 
    public:
-    static bool run(Hart &hart);
+    static bool run(Hart &hart, size_t &instr_counter);
 };
 
 }  // namespace sim

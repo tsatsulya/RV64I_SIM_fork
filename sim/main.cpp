@@ -1,8 +1,9 @@
+#include <chrono>
 #include <string>
+#include <sstream>
 
 #include "CLI/CLI.hpp"
 #include "executor.hpp"
-
 #include "hart.hpp"
 #include "logger.hpp"
 
@@ -30,5 +31,18 @@ int main(int argc, char **argv) {
 
     sim::Hart hart{elf_file};
 
-    sim::Executor::run(hart);
+    size_t instr_counter = 0;
+
+    const auto begin = std::chrono::steady_clock::now();
+    sim::Executor::run(hart, instr_counter);
+    const auto end = std::chrono::steady_clock::now();
+
+    auto time = static_cast<std::chrono::duration<double>>(end - begin).count();
+
+    myLogger.message(Logger::standard, "main", std::to_string(time) + " seconds");
+    myLogger.message(Logger::standard, "main", std::to_string(instr_counter) + " instructions");
+
+    auto ips = instr_counter / time;
+    myLogger.message(Logger::standard, "main", std::to_string(ips) + " instr per second");
+
 }

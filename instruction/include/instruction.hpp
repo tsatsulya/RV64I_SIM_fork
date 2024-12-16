@@ -73,9 +73,13 @@ enum InstrId {
 
     // J - type
     JAL,
+
+    ECALL,
+
+    NO_ID,
 };
 
-constexpr std::array<std::string_view, 49> InstrName{{
+constexpr std::array<std::string_view, 51> InstrName{{
     // R - rype
     "ADD",
     "SUB",
@@ -136,6 +140,10 @@ constexpr std::array<std::string_view, 49> InstrName{{
 
     // J - type
     "JAL",
+
+    "ECALL",
+
+    "NO_ID",
 }};
 
 struct EncInstr {
@@ -152,6 +160,32 @@ struct EncInstr {
         oss << "Instruction: rd: " << +rd << " rs1: " << +rs1 << " rs2: " << +rs2 << " imm: " << imm
             << " (" << static_cast<int64_t>(imm) << ")";
         return oss.str();
+    }
+
+    void flush() {
+        id = NO_ID;
+
+        rd = 0;
+        rs1 = 0;
+        rs2 = 0;
+
+        imm = 0;
+    }
+
+    bool is_terminal() {
+        switch (id) {
+            case JAL:
+            case JALR:
+            case BEQ:
+            case BNE:
+            case BLT:
+            case BGE:
+            case BLTU:
+            case BGEU:
+                return true;
+            default:
+                return false;
+        }
     }
 };
 
