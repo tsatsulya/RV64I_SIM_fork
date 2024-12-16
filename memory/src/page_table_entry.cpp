@@ -1,7 +1,6 @@
 #include "page_table_entry.hpp"
 
 #include "assert.h"
-#include "common.hpp"
 
 namespace sim {
 
@@ -15,7 +14,7 @@ namespace sim {
         kPPNSizeBit = 26;
     }
     size_t high_bit = low_bit + kPPNSizeBit;
-    // return bits<high_bit, low_bit>(m_pte);
+    return my_bits(m_pte, high_bit, low_bit);
 }
 
 }  // namespace sim

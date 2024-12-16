@@ -8,11 +8,11 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
-#include <iostream>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 
-#include "common.hpp"
+#include "common_mem.hpp"
 #include "fmt/format.h"
 #include "logger.hpp"
 
@@ -43,14 +43,26 @@ class Memory {  // PhysMemory
     }
 
     template <typename ValType>
-    void load(uint64_t addr, uint64_t &value) const {  // read
-        // check alignment
+    void load(uint64_t addr, uint64_t &value) const {
+        static_assert(std::is_integral_v<ValType>);
+
+        size_t addr_page_offset = addr & kPageSizeMask;
+        if (addr_page_offset + sizeof(ValType) > kPageSize) {
+            std::runtime_error("Misaligned memory load");
+        }
+
         value = *reinterpret_cast<ValType *>(m_mem + addr);
     }
 
     template <typename ValType>
-    void store(uint64_t addr, uint64_t value) {  // write
-        // check alignment
+    void store(uint64_t addr, uint64_t value) {
+        static_assert(std::is_integral_v<ValType>);
+
+        size_t addr_page_offset = addr & kPageSizeMask;
+        if (addr_page_offset + sizeof(ValType) > kPageSize) {
+            std::runtime_error("Misaligned memory store");
+        }
+
         *reinterpret_cast<ValType *>(m_mem + addr) = value;
     }
 

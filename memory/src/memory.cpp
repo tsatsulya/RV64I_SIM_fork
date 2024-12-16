@@ -1,6 +1,7 @@
 #include "memory.hpp"
 
 #include <assert.h>
+#include <stdexcept>
 
 #include "common.hpp"
 #include "page_table_entry.hpp"
@@ -13,55 +14,60 @@ size_t getVPN(virtual_address_t virtual_address, size_t level) {
     size_t low_bit = kPageBitSize + level * kVPNBitSize;
     size_t high_bit = low_bit + kVPNBitSize;
 
-    // return bits<high_bit, low_bit>(virtual_address);
+    return my_bits(virtual_address, high_bit, low_bit);
 }
 
-// [[nodiscard]] physical_address_t MMU::translate(virtual_address_t virtual_address) const {
-//     // check user_mode: S or U
+[[nodiscard]] physical_address_t MMU::translate(virtual_address_t virtual_address) const {
+    // check user_mode: S or U
 
-//     // 1.
-//     size_t a = m_satp_addr * kPageSize;
-//     size_t level = 2;  // Sv39 max level
+    // 1.
+    size_t a = m_satp_addr * kPageSize;
+    size_t level = 2;  // Sv39 max level
+    pte_t pte_value;
 
-//     // 2.
-//     while (true) {
-//         physical_address_t pte_addr = a + getVPN(virtual_address, level) * sizeof(pte_t);
+    // 2.
+    while (true) {
+        physical_address_t pte_addr = a + getVPN(virtual_address, level) * sizeof(pte_t);
 
-//         // if (auto status = m_phys_memory.load<pte_t>(pte); !status) {
-//         //     return nullptr;  // add status
-//         // }
+        m_phys_memory.load<pte_t>(pte_addr, pte_value);
 
-//         // 3.
-//         if ((pte.v == 0) || (pte.r == 0 && pte.w == 1) || reserved_bits != 0) {
-//             return PAGE_FAULT;
-//         }
+        PageTableEntry Pte(pte_value);
 
-//         // 4.
-//         if (pte.r == 1 || pte.x == 1) {
-//             // find leaf PTE
-//             break;
-//         }
+        // 3.
+        bool reserved_bits_is_null = ((Pte.n() | Pte.pbmt() | Pte.reserved() | Pte.rsw()) == 0);
+        if ((Pte.valid() == 0) || (Pte.r() == 0 && Pte.w() == 1) || !reserved_bits_is_null) {
+            throw std::runtime_error("page fault");
+        }
 
-//         if (level == 0) {
-//             return PAGE_FAULT;
-//         }
+        // 4.
+        if (Pte.r() == 1 || Pte.x() == 1) {
+            // find leaf PTE
+            break;
+        }
 
-//         a = pte.ppn * PAGESIZE;
-//         --level;
-//     }
+        if (level == 0) {
+            throw std::runtime_error("page fault");
+        }
 
-//     // 5. checkLeafFlags
+        --level;
+        a = Pte.getPPN(level) * kPageSize;
+    }
 
-//     // 6.
-//     if (level > 0) {
-//         if (pte[i - 1, 0] != 0) {
-//             return PAGE_FAULT;
-//         }
-//     }
+    // 5. checkLeafFlags
 
-//     // check access and dirty flags
+    // 6.
+    if (level > 0) {
+        if (my_bits(pte_value, level - 1, 0) != 0) {
+            throw std::runtime_error("page fault");
+        }
+    }
 
-//     return m_phys_memory.load(pte);  // + status
-// }
+    // check access and dirty flags
+
+    // create final pte addr from Pte struct
+
+    // m_phys_memory.load()
+    // return m_phys_memory.load(pte);
+}
 
 }  // namespace sim

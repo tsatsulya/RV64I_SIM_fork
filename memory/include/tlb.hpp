@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "common.hpp"
+#include "common_mem.hpp"
 
 namespace sim {
 

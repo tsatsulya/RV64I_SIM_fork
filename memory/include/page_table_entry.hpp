@@ -2,6 +2,8 @@
 #include <cstdint>
 
 #include "common.hpp"
+#include "common_mem.hpp"
+
 
 namespace sim {
 
@@ -27,6 +29,12 @@ class PageTableEntry final {
     [[nodiscard]] bool g() const noexcept { return bit<5>(m_pte); }
     [[nodiscard]] bool a() const noexcept { return bit<6>(m_pte); }
     [[nodiscard]] bool d() const noexcept { return bit<7>(m_pte); }
+    [[nodiscard]] size_t rsw() const noexcept { return bits<9, 8>(m_pte); }
+
+    [[nodiscard]] size_t reserved() const noexcept { return bits<60, 54>(m_pte); }
+    [[nodiscard]] size_t pbmt() const noexcept { return bits<62, 61>(m_pte); }
+    [[nodiscard]] size_t n() const noexcept { return bit<63>(m_pte); }
+
 
     [[nodiscard]] size_t getPPN(size_t level);
 };

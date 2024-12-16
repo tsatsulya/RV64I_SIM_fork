@@ -1,3 +1,5 @@
+#pragma once
+
 #include "hart.hpp"
 #include "instruction.hpp"
 
