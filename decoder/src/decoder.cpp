@@ -421,9 +421,9 @@ void Decoder::decode_instruction(instr_t raw_instr, EncInstr &enc_instr) try {
         }
     }
 
-    Logger &myLogger = Logger::getInstance();
-    myLogger.message(Logger::severity_level::standard, "Decoder",
-                     fmt::format("Match {} {:#08x}\n", InstrName[enc_instr.id], raw_instr));
+    // Logger &myLogger = Logger::getInstance();
+    // myLogger.message(Logger::severity_level::standard, "Decoder",
+    //                  fmt::format("Match {} {:#08x}\n", InstrName[enc_instr.id], raw_instr));
 
 } catch (const std::invalid_argument &e) {
     std::cerr << e.what() << std::endl;

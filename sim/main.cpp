@@ -1,6 +1,7 @@
 #include <chrono>
 #include <string>
 #include <sstream>
+#include <cmath>
 
 #include "CLI/CLI.hpp"
 #include "executor.hpp"
@@ -42,7 +43,7 @@ int main(int argc, char **argv) {
     myLogger.message(Logger::standard, "main", std::to_string(time) + " seconds");
     myLogger.message(Logger::standard, "main", std::to_string(instr_counter) + " instructions");
 
-    auto ips = instr_counter / time;
-    myLogger.message(Logger::standard, "main", std::to_string(ips) + " instr per second");
+    auto ips = instr_counter / time / std::pow(10, 6);
+    myLogger.message(Logger::standard, "main", std::to_string(ips) + " mips");
 
 }

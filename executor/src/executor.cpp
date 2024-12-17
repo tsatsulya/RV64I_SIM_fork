@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <fmt/format.h>
 
-#include <format>
+#include <fmt/format.h>
 #include <iostream>
 #include <sstream>
 
@@ -323,19 +323,23 @@ void Executor::execute_jal(Hart &hart, const EncInstr &instr) {
 }
 
 bool Executor::execute_BB(Hart &hart, BasicBlock &bb, size_t &instr_counter) {
-    Logger &myLogger = Logger::getInstance();
+    // Logger &myLogger = Logger::getInstance();
+
+    // myLogger.message(Logger::severity_level::standard, "Executor", "start BB execution");
 
     auto *bb_instructions = bb.getInstructions();
     auto bb_size = bb.getSize();
+
+    // myLogger.message(Logger::severity_level::standard, "Executor", fmt::format("bb size: {:d}", bb_size));
 
     for (size_t i = 0; i < bb_size; ++i) {
         auto &instruction = bb_instructions[i];
         functions[instruction.id](hart, instruction);
 
-        myLogger.message(
-            Logger::severity_level::standard, "Executor",
-            fmt::format("pc: {:#x} pc_next: {:#x}", hart.get_pc(), hart.get_pc_next()));
-        myLogger.message(Logger::severity_level::verbose, "Executor", hart.format_registers());
+        // myLogger.message(
+        //     Logger::severity_level::standard, "Executor",
+        //     fmt::format("pc: {:#x} pc_next: {:#x}", hart.get_pc(), hart.get_pc_next()));
+        // myLogger.message(Logger::severity_level::verbose, "Executor", hart.format_registers());
         ++instr_counter;
         if (hart.get_pc_next() == 0) {
             return false;
@@ -345,15 +349,15 @@ bool Executor::execute_BB(Hart &hart, BasicBlock &bb, size_t &instr_counter) {
         hart.set_next_pc(hart.get_pc_next() + 4);
     }
 
-    myLogger.message(Logger::severity_level::standard, "Executor", "end of execution");
+    // myLogger.message(Logger::severity_level::standard, "Executor", "end BB execution");
     return true;
 }
 
 bool Executor::run(Hart &hart, size_t &instr_counter) {
-    uint64_t instr;
-    EncInstr enc_instr;
+    // uint64_t instr;
+    // EncInstr enc_instr;
 
-    Logger &myLogger = Logger::getInstance();
+    // Logger &myLogger = Logger::getInstance();
 
     // while (true) {  // TODO: while(true) + break on exit instruction in code
     //     hart.load<uint32_t>(hart.get_pc(), instr);
@@ -370,35 +374,35 @@ bool Executor::run(Hart &hart, size_t &instr_counter) {
     //     hart.set_next_pc(hart.get_pc_next() + 4);
     // }
 
-    myLogger.message(Logger::severity_level::standard, "Executor", enc_instr.format());
-    myLogger.message(Logger::severity_level::standard, "Executor",
-                     fmt::format("pc: {:#x} pc_next: {:#x}", hart.get_pc(), hart.get_pc_next()));
-    myLogger.message(Logger::severity_level::verbose, "Executor", hart.format_registers());
+    // myLogger.message(Logger::severity_level::standard, "Executor",
+    //                  fmt::format("pc: {:#x} pc_next: {:#x}", hart.get_pc(), hart.get_pc_next()));
+    // myLogger.message(Logger::severity_level::verbose, "Executor", hart.format_registers());
 
     BasicBlockCache bb_cache{};
 
     while (true) {
-        myLogger.message(Logger::severity_level::verbose, "Executor",
-                         fmt::format("New bb iteration begin, pc: {:#x}", hart.get_pc()));
+        // myLogger.message(Logger::severity_level::verbose, "Executor",
+        //                  fmt::format("New bb iteration begin, pc: {:#x}", hart.get_pc()));
 
         auto addr = hart.get_pc();
         BasicBlock &bb = bb_cache.find(addr);
         bool bb_in_cache = (addr == bb.getVirtualAddress());
 
-        myLogger.message(Logger::severity_level::standard, "Executor",
-                         fmt::format("BB in cache: {}", bb_in_cache));
+        // myLogger.message(Logger::severity_level::standard, "Executor",
+        //                  fmt::format("BB in cache: {}", bb_in_cache));
 
         if (!bb_in_cache) {
-            myLogger.message(Logger::severity_level::verbose, "Executor",
-                             fmt::format("add bb {:#x} in cache", hart.get_pc()));
-            assert(bb.update(hart));
-            BasicBlock &bb_reference = bb_cache.find(addr);
-            assert(addr == bb_reference.getVirtualAddress());
+            // myLogger.message(Logger::severity_level::verbose, "Executor",
+            //                  fmt::format("add bb {:#x} in cache", hart.get_pc()));
+            bool bb_update_status = bb.update(hart);
+            assert(bb_update_status);
+            // BasicBlock &bb_reference = bb_cache.find(addr);
+            // assert(addr == bb_reference.getVirtualAddress());
         }
 
-        myLogger.message(
-            Logger::severity_level::verbose, "Executor",
-            fmt::format("bb start address after update: {:#x}", bb.getVirtualAddress()));
+        // myLogger.message(
+        //     Logger::severity_level::verbose, "Executor",
+        //     fmt::format("bb start address after update: {:#x}", bb.getVirtualAddress()));
 
         auto exec_status = Executor::execute_BB(hart, bb, instr_counter);
         if (exec_status == false) {

@@ -9,16 +9,16 @@
 
 namespace sim {
 BasicBlock& BasicBlockCache::find(virtual_address_t virtual_address) {
-    Logger &myLogger = Logger::getInstance();
+    // Logger &myLogger = Logger::getInstance();
 
     auto bb_id = bits<kPcCommonBitSize + kBBCacheBitSize, kPcCommonBitSize>(virtual_address);
-    myLogger.message(Logger::severity_level::verbose, "BBCache",
-                     fmt::format("addr: {:#x}, bb_id: {:b}", virtual_address, bb_id));
+    // myLogger.message(Logger::severity_level::verbose, "BBCache",
+    //                  fmt::format("addr: {:#x}, bb_id: {:b}", virtual_address, bb_id));
 
     BasicBlock &bb = m_basic_block[bb_id];
-    myLogger.message(Logger::severity_level::verbose, "BBCache",
-                   fmt::format("addr: {:#x}, bb.getVirtualAddress: {:#x}", virtual_address,
-                               bb.getVirtualAddress()));
+    // myLogger.message(Logger::severity_level::verbose, "BBCache",
+    //                fmt::format("addr: {:#x}, bb.getVirtualAddress: {:#x}", virtual_address,
+    //                            bb.getVirtualAddress()));
     return bb;
 }
 

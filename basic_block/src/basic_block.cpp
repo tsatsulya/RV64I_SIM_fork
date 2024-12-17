@@ -10,7 +10,7 @@
 namespace sim {
 
 bool BasicBlock::update(const Hart &hart) {
-    Logger &myLogger = Logger::getInstance();
+    // Logger &myLogger = Logger::getInstance();
 
     m_size = 0;
     m_virtual_address = hart.get_pc();
@@ -27,9 +27,9 @@ bool BasicBlock::update(const Hart &hart) {
 
         m_instructions[m_size] = enc_instr;
 
-        myLogger.message(Logger::severity_level::standard, "BB", enc_instr.format());
-        myLogger.message(Logger::severity_level::standard, "BB",
-                         fmt::format("bb pc: {:#x}", current_addr));
+        // myLogger.message(Logger::severity_level::standard, "BB", enc_instr.format());
+        // myLogger.message(Logger::severity_level::standard, "BB",
+        //                  fmt::format("bb pc: {:#x}", current_addr));
 
         ++m_size;
         current_addr += 4;
