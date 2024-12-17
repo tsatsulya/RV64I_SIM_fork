@@ -36,10 +36,10 @@ class Memory {  // PhysMemory
         }
         m_mem = static_cast<uint8_t *>(mmap_result);
 
-        Logger &myLogger = Logger::getInstance();
-        myLogger.message(Logger::severity_level::standard, "Memory",
-                         fmt::format("{} - {}", static_cast<void *>(m_mem),
-                                     static_cast<void *>(m_mem + m_size)));
+        // Logger &myLogger = Logger::getInstance();
+        // myLogger.message(Logger::severity_level::standard, "Memory",
+        //                  fmt::format("{} - {}", static_cast<void *>(m_mem),
+        //                              static_cast<void *>(m_mem + m_size)));
     }
 
     template <typename ValType>

@@ -76,10 +76,11 @@ enum InstrId {
 
     ECALL,
 
+    FAKE_BB_END,
     NO_ID,
 };
 
-constexpr std::array<std::string_view, 51> InstrName{{
+constexpr std::array<std::string_view, 52> InstrName{{
     // R - rype
     "ADD",
     "SUB",
@@ -143,6 +144,7 @@ constexpr std::array<std::string_view, 51> InstrName{{
 
     "ECALL",
 
+    "FAKE_BB_END",
     "NO_ID",
 }};
 

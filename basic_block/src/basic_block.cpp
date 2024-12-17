@@ -15,9 +15,8 @@ bool BasicBlock::update(const Hart &hart) {
     m_size = 0;
     m_virtual_address = hart.get_pc();
     auto current_addr = m_virtual_address;
-    bool instr_is_terminal = false;
 
-    while (m_size < kMaxNumberOfInstr && !instr_is_terminal) {
+    while (m_size < kMaxNumberOfInstr - 1) {
         uint64_t instr;
         hart.load<uint32_t>(current_addr, instr);
 
@@ -33,8 +32,13 @@ bool BasicBlock::update(const Hart &hart) {
 
         ++m_size;
         current_addr += 4;
-        instr_is_terminal = enc_instr.is_terminal();
+        if (enc_instr.is_terminal()) {
+            return true;
+        }
     }
+
+    m_instructions[kMaxNumberOfInstr - 1] = {.id = FAKE_BB_END};
+    ++m_size;
 
     return true;
 }
