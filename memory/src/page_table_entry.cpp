@@ -1,6 +1,8 @@
 #include "page_table_entry.hpp"
 
-#include "assert.h"
+#include <assert.h>
+
+#include "common_mem.hpp"
 
 namespace sim {
 
@@ -15,6 +17,10 @@ namespace sim {
     }
     size_t high_bit = low_bit + kPPNSizeBit;
     return my_bits(m_pte, high_bit, low_bit);
+}
+
+[[nodiscard]] physical_address_t PageTableEntry::getPageAddress() {
+    return my_bits(m_pte, kPPNHighBit, kPPNLowBit) << kPPNLowBit;
 }
 
 }  // namespace sim

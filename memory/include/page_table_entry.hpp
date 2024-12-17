@@ -4,7 +4,6 @@
 #include "common.hpp"
 #include "common_mem.hpp"
 
-
 namespace sim {
 
 using pte_t = uint64_t;
@@ -17,7 +16,7 @@ class PageTableEntry final {
     static constexpr size_t kPPNHighBit = 53;
 
    public:
-    PageTableEntry(pte_t pte) : m_pte(pte) {}
+    PageTableEntry(pte_t pte = 0) : m_pte(pte) {}
 
     explicit PageTableEntry(physical_address_t physical_address, uint8_t flags);
 
@@ -35,8 +34,8 @@ class PageTableEntry final {
     [[nodiscard]] size_t pbmt() const noexcept { return bits<62, 61>(m_pte); }
     [[nodiscard]] size_t n() const noexcept { return bit<63>(m_pte); }
 
-
     [[nodiscard]] size_t getPPN(size_t level);
+    [[nodiscard]] physical_address_t getPageAddress();
 };
 
 }  // namespace sim

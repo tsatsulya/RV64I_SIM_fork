@@ -724,10 +724,10 @@ void Executor::execute_auipc(Hart &hart, const EncInstr *instructions, size_t in
 void Executor::execute_jal(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     hart.set_reg(instr.rd, hart.get_pc_next());
-    hart.set_next_pc(hart.get_pc() + instr.imm);
 
-    hart.set_pc(hart.get_pc_next());
-    hart.set_next_pc(hart.get_pc_next() + 4);
+    auto next_pc = hart.get_pc() + instr.imm;
+    hart.set_pc(next_pc);
+    hart.set_next_pc(next_pc + 4);
 }
 
 void Executor::execute_fake_bb_end(Hart &hart, const EncInstr *instructions, size_t instr_index) {

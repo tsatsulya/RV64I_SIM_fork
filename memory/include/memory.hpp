@@ -23,7 +23,7 @@ class Memory {  // PhysMemory
     size_t m_size;
     uint8_t *m_mem;
 
-    static constexpr size_t default_mem_size = 0x100000;  // 1 GB
+    static constexpr size_t default_mem_size = 0x400000;  // 4 GB
 
    public:
     Memory(size_t size = default_mem_size) : m_size(size) {
@@ -42,11 +42,19 @@ class Memory {  // PhysMemory
         //                              static_cast<void *>(m_mem + m_size)));
     }
 
+    Memory(const Memory &memory) = delete;
+    Memory &operator=(const Memory &memory) = delete;
+
+    Memory(Memory &&memory) = delete;
+    Memory &operator=(Memory &&memory) = delete;
+
+    ~Memory() = default;
+
     template <typename ValType>
-    void load(uint64_t addr, uint64_t &value) const {
+    void load(virtual_address_t addr, uint64_t &value) const {
         static_assert(std::is_integral_v<ValType>);
 
-        size_t addr_page_offset = addr & kPageSizeMask;
+        virtual_address_t addr_page_offset = addr & kPageSizeMask;
         if (addr_page_offset + sizeof(ValType) > kPageSize) {
             std::runtime_error("Misaligned memory load");
         }
@@ -55,10 +63,10 @@ class Memory {  // PhysMemory
     }
 
     template <typename ValType>
-    void store(uint64_t addr, uint64_t value) {
+    void store(virtual_address_t addr, uint64_t value) {
         static_assert(std::is_integral_v<ValType>);
 
-        size_t addr_page_offset = addr & kPageSizeMask;
+        virtual_address_t addr_page_offset = addr & kPageSizeMask;
         if (addr_page_offset + sizeof(ValType) > kPageSize) {
             std::runtime_error("Misaligned memory store");
         }
@@ -71,7 +79,7 @@ class Memory {  // PhysMemory
     }
 };
 
-size_t getVPN(virtual_address_t virtual_address, size_t level);
+[[nodiscard]] size_t getVPN(virtual_address_t virtual_address, size_t level);
 
 class MMU final {
    private:

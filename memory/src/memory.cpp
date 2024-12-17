@@ -1,6 +1,7 @@
 #include "memory.hpp"
 
 #include <assert.h>
+
 #include <stdexcept>
 
 #include "common.hpp"
@@ -8,7 +9,7 @@
 
 namespace sim {
 
-size_t getVPN(virtual_address_t virtual_address, size_t level) {
+[[nodiscard]] size_t getVPN(virtual_address_t virtual_address, size_t level) {
     assert(level < 3 && "Sv39 does not support VPN level higher than 2");
 
     size_t low_bit = kPageBitSize + level * kVPNBitSize;
@@ -21,18 +22,17 @@ size_t getVPN(virtual_address_t virtual_address, size_t level) {
     // check user_mode: S or U
 
     // 1.
-    size_t a = m_satp_addr * kPageSize;
+    size_t table_ppn = m_satp_addr * kPageSize;
     size_t level = 2;  // Sv39 max level
-    pte_t pte_value;
+
+    pte_t pte_value = 0;
 
     // 2.
     while (true) {
-        physical_address_t pte_addr = a + getVPN(virtual_address, level) * sizeof(pte_t);
+        physical_address_t pte_addr = table_ppn + getVPN(virtual_address, level) * sizeof(pte_t);
 
         m_phys_memory.load<pte_t>(pte_addr, pte_value);
-
         PageTableEntry Pte(pte_value);
-
         // 3.
         bool reserved_bits_is_null = ((Pte.n() | Pte.pbmt() | Pte.reserved() | Pte.rsw()) == 0);
         if ((Pte.valid() == 0) || (Pte.r() == 0 && Pte.w() == 1) || !reserved_bits_is_null) {
@@ -50,7 +50,7 @@ size_t getVPN(virtual_address_t virtual_address, size_t level) {
         }
 
         --level;
-        a = Pte.getPPN(level) * kPageSize;
+        table_ppn = Pte.getPPN(level) * kPageSize;
     }
 
     // 5. checkLeafFlags
@@ -67,6 +67,13 @@ size_t getVPN(virtual_address_t virtual_address, size_t level) {
     // create final pte addr from Pte struct
 
     // m_phys_memory.load()
+
+    PageTableEntry Pte(pte_value);
+
+    physical_address_t offset = my_bits(virtual_address, kPageBitSize - 1, 0);  // check offset
+    physical_address_t page_address = Pte.getPageAddress();
+    return page_address + offset;
+
     // return m_phys_memory.load(pte);
 }
 
