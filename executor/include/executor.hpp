@@ -7,7 +7,7 @@
 namespace sim {
 
 class Executor {
-   private:
+   public:
     // R - type
     static void execute_add(Hart &hart, const EncInstr *instructions, size_t instr_index);
     static void execute_sub(Hart &hart, const EncInstr *instructions, size_t instr_index);
@@ -24,6 +24,10 @@ class Executor {
     static void execute_srlw(Hart &hart, const EncInstr *instructions, size_t instr_index);
     static void execute_subw(Hart &hart, const EncInstr *instructions, size_t instr_index);
     static void execute_sraw(Hart &hart, const EncInstr *instructions, size_t instr_index);
+    static void execute_sri(Hart &hart, const EncInstr *instructions, size_t instr_index);
+    static void execute_sriw(Hart &hart, const EncInstr *instructions, size_t instr_index);
+
+
 
     // I - type
     static void execute_jalr(Hart &hart, const EncInstr *instructions, size_t instr_index);
@@ -84,7 +88,6 @@ class Executor {
     using executor_func_t = void (*)(Hart &hart, const EncInstr *instructions, size_t instr_index);
     static const std::array<Executor::executor_func_t, 51> functions;
 
-   public:
     static bool run(Hart &hart, size_t &instr_counter);
 };
 

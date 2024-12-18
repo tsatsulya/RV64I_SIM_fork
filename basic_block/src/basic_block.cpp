@@ -3,6 +3,7 @@
 #include <fmt/format.h>
 
 #include "decoder.hpp"
+#include "executor.hpp"
 #include "hart.hpp"
 #include "instruction.hpp"
 #include "logger.hpp"
@@ -37,7 +38,7 @@ bool BasicBlock::update(const Hart &hart) {
         }
     }
 
-    m_instructions[kMaxNumberOfInstr - 1] = {.id = FAKE_BB_END};
+    m_instructions[kMaxNumberOfInstr - 1] = {.id = FAKE_BB_END, .execute = Executor::execute_fake_bb_end};
     ++m_size;
 
     return true;

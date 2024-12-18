@@ -4,9 +4,15 @@
 
 #include <sstream>
 #include <string>
+#include <iostream>
 #include <string_view>
+#include <functional>
+
+#include "hart.hpp"
 
 namespace sim {
+
+class Hart;
 
 using instr_t = uint32_t;
 
@@ -148,6 +154,10 @@ constexpr std::array<std::string_view, 52> InstrName{{
     "NO_ID",
 }};
 
+struct EncInstr;
+
+typedef std::function<void(Hart &, const EncInstr *, size_t)> executorT;
+
 struct EncInstr {
     InstrId id;
 
@@ -156,6 +166,8 @@ struct EncInstr {
     uint8_t rs2 = 0;
 
     uint64_t imm = 0;
+
+    executorT execute;
 
     std::string format() {
         std::ostringstream oss{};
@@ -189,6 +201,63 @@ struct EncInstr {
                 return false;
         }
     }
+
+    void decodeRawR(InstrId id_, instr_t raw_instr, executorT exec) {
+        execute = exec;
+        id = id_;
+        rs2 = bits<24, 20>(raw_instr);
+        rs1 = bits<19, 15>(raw_instr);
+        rd = bits<11, 7>(raw_instr);
+    }
+
+    void decodeRawI(InstrId id_, instr_t raw_instr, executorT exec) {
+        execute = exec;
+        id = id_;
+        imm = sbits<31, 20>(raw_instr);
+        rs1 = bits<19, 15>(raw_instr);
+        rd = bits<11, 7>(raw_instr);
+
+        if (id == InstrId::SRAI) {
+            if (bit<10>(imm)) {
+                id = InstrId::SRAIW;
+            } else {
+                id = InstrId::SRLIW;
+            }
+        }
+    }
+
+    void decodeRawB(InstrId id_, instr_t raw_instr, executorT exec) {
+        execute = exec;
+        id = id_;
+        imm = sbits<12, 0>((bit<31>(raw_instr) << 12) | (bits<30, 25>(raw_instr) << 5) |
+                           (bits<11, 8>(raw_instr) << 1) | (bit<7>(raw_instr) << 11));
+        rs2 = bits<24, 20>(raw_instr);
+        rs1 = bits<19, 15>(raw_instr);
+    }
+
+    void decodeRawS(InstrId id_, instr_t raw_instr, executorT exec) {
+        execute = exec;
+        id = id_;
+        imm = (sbits<31, 25>(raw_instr) << 5) | (bits<11, 7>(raw_instr));
+        rs2 = bits<24, 20>(raw_instr);
+        rs1 = bits<19, 15>(raw_instr);
+    }
+
+    void decodeRawU(InstrId id_, instr_t raw_instr, executorT exec) {
+        execute = exec;
+        id = id_;
+        imm = sbits<31, 12>(raw_instr) << 12;
+        rd = bits<11, 7>(raw_instr);
+    }
+
+    void decodeRawJ(InstrId id_, instr_t raw_instr, executorT exec) {
+        execute = exec;
+        id = id_;
+        imm = sbits<20, 0>((bit<31>(raw_instr) << 20) | (bits<30, 21>(raw_instr) << 1) |
+                                 (bit<20>(raw_instr) << 11) | (bits<19, 12>(raw_instr) << 12));
+        rd = bits<11, 7>(raw_instr);
+    }
+
 };
 
-}  // namespace sim
+} // sim
